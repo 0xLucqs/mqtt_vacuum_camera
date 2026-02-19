@@ -101,13 +101,11 @@ class MQTTCameraOptionsFlowHandler(OptionsFlow):
         self.old_rotation = self.camera_config.options.get("rotate_image", "0")
         self.selected_floor = None
         self._rotation_changed = False
-        options_values = list(self.camera_config.options.values())
-        if len(options_values) > 0:
-            # Initialize schemas using dataclass
-            self._schemas = OptionsSchemas(
-                config_entry=config_entry,
-                is_alpha_enabled=self.is_alpha_enabled
-            )
+        # Initialize schemas using dataclass
+        self._schemas = OptionsSchemas(
+            config_entry=config_entry,
+            is_alpha_enabled=self.is_alpha_enabled
+        )
 
     def _get_ha_floors(self) -> list[dict[str, str]]:
         """Get list of floors with both ID and display name.
