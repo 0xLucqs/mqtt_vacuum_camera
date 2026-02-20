@@ -13,7 +13,6 @@ import time
 from typing import Optional
 
 from aiohttp import web
-
 from homeassistant import config_entries, core
 from homeassistant.components.camera import Camera, CameraEntityFeature
 from homeassistant.const import CONF_UNIQUE_ID, MATCH_ALL
@@ -144,9 +143,6 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         self.context.shared.user_language = "en"
         self.context.shared.image_grab = True
 
-        # Clean up www folder
-        self._init_clear_www_folder()
-
         # Listen to the vacuum.start event
         self.settings.event_listener = self.context.hass.bus.async_listen(
             "event_vacuum_start", self.handle_vacuum_start
@@ -187,7 +183,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             file_name=self.context.file_name,
             download_image_func=processor.download_image,
             open_image_func=processor.async_open_image,
-            pil_to_bytes_func=self._run_async_pil_to_bytes,
+            pil_to_bytes_func=self._run_async_image_to_bytes,
         )
         obstacle_view = ObstacleView(obstacle_context)
 
@@ -198,17 +194,6 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             colours=colours,
             obstacle_view=obstacle_view,
         )
-
-    def _init_clear_www_folder(self):
-        """Remove PNG snapshots stored in HA config WWW if snapshots are disabled."""
-        # If enable_snapshots is disabled, remove any existing snapshot file
-        snapshot_path = (
-            Path(self.paths.homeassistant_path)
-            / "www"
-            / f"snapshot_{self.context.file_name}.png"
-        )
-        if not self.context.shared.enable_snapshots and snapshot_path.is_file():
-            snapshot_path.unlink()
 
     async def async_cleanup_all(self):
         """Clean up all dispatcher connections."""
@@ -224,7 +209,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         self.settings.should_poll = True
         _start_image = self.context.shared.last_image
         self.image_state.main_image = await self.context.hass.async_add_executor_job(
-            self._pil_to_bytes, _start_image, "Start Up"
+            self._image_to_bytes, _start_image, "Start Up"
         )
         self.context.shared.camera_mode = CameraModes.MAP_VIEW
         # Setup ObstacleView manager
@@ -250,7 +235,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
     @property
     def name(self) -> str:
         """Camera Entity Name"""
-        return self._attr_name
+        return self._attr_name or ""
 
     @property
     def model(self) -> str | None:
@@ -283,15 +268,11 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             self._attr_is_streaming = True
         return self._attr_is_streaming
 
-    def disable_motion_detection(self) -> bool:
-        """Disable Motion Detection
-        :return bool always False as this is not in use in this implementation"""
-        return False
+    def disable_motion_detection(self) -> None:
+        """Disable Motion Detection - not implemented."""
 
-    def enable_motion_detection(self) -> bool:
-        """Enable Motion Detection
-        :return bool always False as this is not in use in this implementation"""
-        return False
+    def enable_motion_detection(self) -> None:
+        """Enable Motion Detection - not implemented."""
 
     # noinspection PyUnusedLocal
     def camera_image(
@@ -310,7 +291,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         return self.processors.processor.data["image"]["binary"]
 
     @property
-    def supported_features(self) -> int:
+    def supported_features(self) -> CameraEntityFeature:
         """Return supported features."""
         return CameraEntityFeature.ON_OFF
 
@@ -323,8 +304,8 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             ATTR_VACUUM_TOPIC: self.mqtt.topic,
         }
         attributes.update(attr_data)
-        # Override content_type to match the actual image_format setting
-        attributes["content_type"] = self.context.shared.image_format
+        # Override content_type to match the actual image format setting
+        attributes["content_type"] = self.context.shared.get_content_type()
         return attributes
 
     @property
@@ -354,7 +335,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
     def device_info(self):
         """Return the device info."""
         # Use Dev_Info (device_registry) if available, otherwise Entity_Info
-        device_info_class = Dev_Info or Entity_Info
+        device_info_class = Dev_Info if Dev_Info is not None else Entity_Info
         return device_info_class(identifiers=self.device.identifiers)
 
     def turn_on(self) -> None:
@@ -480,7 +461,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             )
         return parsed_json, test_mode, data_type
 
-    def _pil_to_bytes(self, pil_img, image_id: str | None = None) -> Optional[bytes]:
+    def _image_to_bytes(self, pil_img, image_id: str | None = None) -> Optional[bytes]:
         """Convert PIL image to bytes"""
         if pil_img:
             LOGGER.debug(
@@ -501,12 +482,12 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         finally:
             buffered.close()
 
-    async def _run_async_pil_to_bytes(self, pil_img, image_id: str | None = None):
+    async def _run_async_image_to_bytes(self, pil_img, image_id: str | None = None):
         """Thread function to process the image data using persistent thread pool."""
         try:
             result = await self.processors.thread_pool.run_in_executor(
                 "camera_processing",
-                self._pil_to_bytes,
+                self._image_to_bytes,
                 pil_img,
                 image_id,
             )
@@ -544,9 +525,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         to maintain a steady cadence.
         """
         response = web.StreamResponse()
-        response.content_type = (
-            "multipart/x-mixed-replace;boundary=--frameboundary"
-        )
+        response.content_type = "multipart/x-mixed-replace;boundary=--frameboundary"
         await response.prepare(request)
 
         try:
