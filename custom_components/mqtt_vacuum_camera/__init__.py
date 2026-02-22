@@ -442,4 +442,37 @@ async def async_migrate_entry(hass, config_entry: config_entries.ConfigEntry):
             "Migration failed: No options found in config entry. Please reconfigure the camera."
         )
         return False
+    if config_entry.version == 3.5:
+        LOGGER.info("Migrating config entry from version %s", config_entry.version)
+        old_data = {**config_entry.data}
+        new_data = {"vacuum_config_entry": old_data["vacuum_config_entry"]}
+        old_options = {**config_entry.options}
+        if len(old_options) != 0:
+            # Add mop mode, obstacle link, and floor management options
+            tmp_option: dict[str, Any] = {  # type: ignore[no-redef]
+                "mop_path_width": 10,
+                "color_mop_move": [238, 247, 255],
+                "alpha_mop_move": 100.0,
+                "obstacle_link_protocol": "http",
+                "obstacle_link_port": 80,
+                "obstacle_link_ip": "",
+                "floors_data": {},
+                "current_floor": "floor_0",
+            }
+            new_options = await update_options(old_options, tmp_option)
+            del tmp_option  # Clear for mypy
+            LOGGER.debug("Migration data: %s", dict(new_options))
+            hass.config_entries.async_update_entry(
+                config_entry, version=3.6, data=new_data, options=new_options
+            )
+            LOGGER.info(
+                "Migration to config entry version %s successful",
+                config_entry.version,
+            )
+            return True
+
+        LOGGER.error(
+            "Migration failed: No options found in config entry. Please reconfigure the camera."
+        )
+        return False
     return True
