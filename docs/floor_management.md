@@ -5,6 +5,40 @@
 ***Description:***
 The Floor Management feature allows you to manage multiple floors for vacuum cleaners that support multi-floor mapping. Each floor can have its own trim settings, allowing you to customize the map display for different levels of your home.
 
+## First Time Setup - Step by Step
+
+If you're setting up floor management for the first time, follow these steps in order:
+
+**Step 1: Select Active Floor**
+1. Go to Floor Management menu
+2. Select **"Select Active Floor"**
+3. Choose the floor you want to work with (e.g., "ground_floor" or "floor_0")
+4. This sets which floor you'll be configuring
+
+**Step 2: Add New Floor**
+1. Select **"Add New Floor"** from the Floor Management menu
+2. Enter the floor name/identifier
+3. The floor is now created and ready for configuration
+
+**Step 3: Update Floor Data**
+1. Select **"Edit Floor Settings"** from the Floor Management menu
+2. The edit menu will appear
+
+**Step 4: Select Floor to Edit and Confirm**
+1. When the edit floor menu is shown, **reselect the floor** you want to edit from the dropdown
+2. Adjust the trim settings as needed:
+   - Left trim
+   - Right trim
+   - Top trim
+   - Bottom trim
+3. Click **Submit** to save the changes
+
+**Step 5: Save Options**
+1. Use **"Back to Main Menu"** to return to the main configuration menu
+2. **Save** your options to apply all changes
+
+**Important:** After editing floor settings, you must go back to the main menu and save the options for the changes to take effect!
+
 ## Floor Management Operations
 
 The Floor Management menu provides four main operations:
@@ -59,6 +93,7 @@ Remove a floor configuration that is no longer needed.
 3. Choose the desired operation
 4. After completing an operation, you'll return to the Floor Management menu
 5. Use **"Back to Main Menu"** to return to the main configuration menu
+6. **Important:** Always **Save** your options after making changes to floor settings!
 
 ## Floor-Specific Trim Settings
 
