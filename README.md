@@ -72,16 +72,19 @@ Deliver an out-of-the-box solution for integrating MQTT-based vacuums into Home 
 - 🔍 **[Auto-Zoom](./docs/auto_zoom.md)** - Automatically zoom to the room being cleaned
 - 🎨 **Customizable Colors** - Configure colors for robot, charger, walls, background, zones, and rooms
 - 🌈 **[Transparency Control](./docs/transparency.md)** - Adjust transparency for all elements and rooms
-- 📊 **Status Display** - Show vacuum status and current room on the map
+- 📊 **[Status Display](./docs/status_text.md)** - Show vacuum status, current room, battery level, and dock operations on the map
+- 🧹 **[Mop Mode](./docs/mop_mode.md)** - Visualize mop path with customizable width, color, and transparency (Hypfer vacuums)
 
 ### Advanced Features
 - 🗺️ **Auto-Generated Calibration** - Automatic calibration points for [lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)
 - 🏠 **Auto-Generated Rooms** - Automatic room configuration when supported by vacuum
 - 🚫 **Zone Visualization** - Display No-Go zones, virtual walls, zone clean areas, and active segments
-- 🚧 **[Obstacle Detection](./docs/obstacles_detection.md)** - View obstacles and obstacle images (when supported)
-- 🏗️ **Floor Materials** - Detect and render different floor types (wood, tiles, carpets)
+- 🚧 **[Obstacle Detection](./docs/obstacles_detection.md)** - View obstacles and obstacle images with customizable link settings
+- 🏗️ **[Floor Materials](./docs/materials.md)** - Detect and render different floor types (wood, tiles, carpets)
+- 🏢 **[Multi-Floor Management](./docs/floor_management.md)** - Manage multiple floors with individual trim settings for each level
 - 📡 **Rand256 Sensors** - Pre-configured sensors for complete Home Assistant integration
 - 🎮 **[Control Actions](./docs/actions.md)** - Control vacuums without formatting MQTT messages manually
+- 📹 **[MJPEG Streaming](./docs/streaming.md)** - Stream maps to go2rtc/ffmpeg for HomeKit and other video consumers
 
 </details>
 

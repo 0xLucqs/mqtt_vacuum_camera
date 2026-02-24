@@ -71,6 +71,47 @@ tiles:
 1. Ensure your vacuum supports `ObstacleImagesCapability` and is integrated into Home Assistant.
 2. Use a compatible frontend card that allows interaction with map coordinates such the [Xaiomi Vacuum Map Card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card).
 
+### Obstacle Image Link Settings (Advanced)
+
+If your vacuum supports obstacle images, you can customize how the camera connects to your vacuum to download obstacle images. This is useful if you need to use a specific network configuration.
+
+**How to access:**
+1. Open your camera's configuration options
+2. Select **"Image Settings"**
+3. Select **"Obstacle Image Link Settings"**
+
+**Available Settings:**
+
+#### 1. Protocol
+***Default:*** HTTP
+
+Choose the protocol to use when connecting to your vacuum:
+- **HTTP** - Standard connection (recommended for most users)
+- **HTTPS** - Secure connection (if your vacuum supports it)
+
+#### 2. Port
+***Default:*** 80
+
+The network port to use for connecting to your vacuum:
+- **80** - Standard HTTP port (default)
+- **443** - Standard HTTPS port (if using HTTPS)
+- **Custom** - Any port number from 1 to 65535 (if your vacuum uses a custom port)
+
+#### 3. IP Address
+***Default:*** Auto-detected
+
+The IP address of your vacuum. This is usually detected automatically, but you can set it manually if needed:
+- **Leave empty** - The camera will use the automatically detected IP address (recommended)
+- **Enter manually** - Type your vacuum's IP address if auto-detection doesn't work
+
+**When to use these settings:**
+- Most users don't need to change these settings - the defaults work great!
+- Only change these if you have a special network setup
+- Only change these if your vacuum uses non-standard ports
+- Only change these if auto-detection isn't working
+
+**Note:** These settings only appear if your vacuum supports obstacle images. If you don't see this menu, your vacuum doesn't have this capability.
+
 ## Notes
 ### Supported Vacuums
 When the Vacuum support Obstacle Detections and has no oboard camera.

@@ -12,12 +12,26 @@
 
 ***Description:*** If enabled the status text will be displayed on the images.
 
-Information provide from the status text are:
+Information provided from the status text are:
 
-- Vacuum Friendly Name: The friendly name of the vacuum.
-- Vacuum State: The state of the vacuum.
-- Vacuum Current Room: The room where the vacuum is located.
-- Vacuum Battery Level: The battery level of the vacuum.
+- **Vacuum Friendly Name:** The friendly name of the vacuum.
+- **Vacuum State:** The state of the vacuum (cleaning, returning, docked, etc.).
+- **Vacuum Current Room:** The room where the vacuum is located.
+- **Vacuum Battery Level:** The battery level of the vacuum.
+- **Dock Operations:** Special dock activities (when supported by your vacuum):
+  - **Dustbin Emptying** - When the dock is automatically emptying the vacuum's dustbin
+  - **Cleaning Mop Pads** - When the dock is washing the mop pads
+  - **Drying Mop Pads** - When the dock is drying the mop pads after cleaning
+
+### Smart Dock Status
+
+If your vacuum has a smart dock (auto-empty station or mop cleaning station), the camera will show what the dock is doing! This is really helpful because you can see:
+
+- When your vacuum is getting its dustbin emptied automatically
+- When the mop pads are being cleaned
+- When the mop pads are being dried
+
+This information comes directly from your vacuum and appears in the status text automatically. You don't need to configure anything special - if your vacuum supports it, it will just work!
 
 ***2.*** Text Font.
 
@@ -56,7 +70,7 @@ displayed at the bottom left of the image. OFF the text is displayed at the bott
 ***Description:*** It is possible to change the color of the status text.
 
 If you want to customize the transparency of the text, you can use the to set the transparency of the text in the
-General [Colours](./docs/colours) options.
+General [Colours](./colours.md) options.
 
 ![Screenshot 2024-03-16 at 09 58 35](https://github.com/sca075/valetudo_vacuum_camera/assets/82227818/b6cc76dc-384a-4586-87b2-6a248aa5cf3a)
 
