@@ -102,12 +102,14 @@ class CameraDeviceInfo:
 @dataclass
 class CameraMQTTConfig:
     """Config of Camera.py"""
+
     topic: str
     connector: Any  # ValetudoConnector
 
     def __post_init__(self):
         if self.connector is None:
-            raise ValueError('Connector cannot be None')
+            raise ValueError("Connector cannot be None")
+
 
 @dataclass
 class CameraPathsConfig:
@@ -122,8 +124,8 @@ class CameraImageState:
     """Current image state and dimensions."""
 
     main_image: Optional[bytes] = None
-    width: Optional[int] = 0
-    height: Optional[int] = 0
+    width: int = 0
+    height: int = 0
     json_data: Optional[dict] = None
 
 
