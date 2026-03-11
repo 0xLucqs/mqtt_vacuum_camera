@@ -134,6 +134,17 @@ def extract_file_name(unique_id: str) -> str:
     file_name = re.sub(r"_camera$", "", unique_id)
     return file_name.lower()
 
+def is_congaduto_vacuum(vacuum_device: DeviceEntry) -> bool:
+    """
+    Check if the vacuum is running Congaduto firmware.
+    """
+    sof_version = str(vacuum_device.sw_version)
+    manufacturer = str(vacuum_device.manufacturer)
+    if (sof_version.lower()).startswith("congaduto") or (
+        manufacturer.lower()
+    ).startswith("cecotec"):
+        return True  # This is a Concaduto vacuum (Valetudo)
+    return False
 
 def is_rand256_vacuum(vacuum_device: DeviceEntry) -> bool:
     """

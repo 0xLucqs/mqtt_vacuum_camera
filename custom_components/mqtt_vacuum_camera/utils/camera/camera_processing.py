@@ -15,6 +15,7 @@ from typing import Any
 from PIL import Image
 import aiohttp
 from valetudo_map_parser.config.types import JsonType, PilPNG
+from valetudo_map_parser.conga_handler import CongaMapImageHandler
 from valetudo_map_parser.hypfer_handler import HypferMapImageHandler
 from valetudo_map_parser.rand256_handler import ReImageHandler
 
@@ -26,26 +27,60 @@ LOGGER.propagate = True
 
 class CameraProcessor:
     """
-    CameraProcessor class to process the image data from the Vacuum Json data.
+    CameraProcessor class to process the image data from the Vacuum JASON data.
     """
 
     def __init__(self, hass, camera_shared, thread_pool: ThreadPoolManager):
         self.hass = hass
-        self._map_handler = HypferMapImageHandler(camera_shared)
-        self._re_handler = ReImageHandler(camera_shared)
         self._shared = camera_shared
+        if self._shared.is_rand:
+            self._re_handler = ReImageHandler(camera_shared)
+        elif self._shared.is_conga:
+            self._conga_handler = CongaMapImageHandler(camera_shared)
+        else:
+            self._map_handler = HypferMapImageHandler(camera_shared)
         self._thread_pool = thread_pool
         self.data = {}
         self._file_name = self._shared.file_name
 
     async def async_process_valetudo_data(self, parsed_json: JsonType) -> PilPNG | None:
         """
-        Compose the Camera Image from the Vacuum Json data.
+        Compose the Camera Image from the Vacuum JSON data.
         :param parsed_json:
         :return pil_img:
         """
         if parsed_json is not None:
             pil_img, data = await self._map_handler.async_get_image(
+                m_json=parsed_json, bytes_format=True
+            )
+
+            if self._shared.export_svg:
+                self._shared.export_svg = False
+
+            if pil_img is not None:
+                self.data = data
+                update_vac_state = self._shared.vacuum_state
+                if not self._shared.snapshot_take and (
+                    update_vac_state in NOT_STREAMING_STATES
+                ):
+                    # suspend image processing if we are at the next frame.
+                    if (
+                        self._shared.frame_number
+                        != self._map_handler.get_frame_number()
+                    ):
+                        self._shared.image_grab = False
+                        self._map_handler.update_trims()
+            return pil_img
+        return None
+
+    async def async_process_conga_data(self, parsed_json: JsonType) -> PilPNG | None:
+        """
+        Compose the Camera Image from the Vacuum JSON data.
+        :param parsed_json:
+        :return pil_img:
+        """
+        if parsed_json is not None:
+            pil_img, data = await self._conga_handler.async_get_image(
                 m_json=parsed_json, bytes_format=True
             )
 
@@ -93,13 +128,19 @@ class CameraProcessor:
         return None
 
     def run_process_valetudo_data(self, parsed_json: JsonType):
-        """Async function to process the image data from the Vacuum Json data."""
+        """Async function to process the image data from the Vacuum JSON data."""
         try:
             if self._shared.is_rand:
                 result = self._thread_pool.run_async_in_executor(
                     "camera_processing",
                     self.async_process_rand256_data,
                     parsed_json,
+                )
+            elif self._shared.is_conga:
+                result = self._thread_pool.run_async_in_executor(
+                    "camera_processing",
+                    self.async_process_conga_data,
+                    parsed_json
                 )
             else:
                 result = self._thread_pool.run_async_in_executor(

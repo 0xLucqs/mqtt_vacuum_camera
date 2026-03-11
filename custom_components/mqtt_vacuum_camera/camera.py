@@ -286,9 +286,18 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
             width, height = self.image_state.width, self.image_state.height
             return self.image_state.main_image
         # Return the binary image data from the processor
-        width, height = self.processors.processor.data["image"]["size"]
-        self.image_state.width, self.image_state.height = width, height
-        return self.processors.processor.data["image"]["binary"]
+        # Defensive check: ensure processor.data exists and has expected structure
+        if (
+            self.processors.processor.data
+            and "image" in self.processors.processor.data
+            and "size" in self.processors.processor.data["image"]
+            and "binary" in self.processors.processor.data["image"]
+        ):
+            width, height = self.processors.processor.data["image"]["size"]
+            self.image_state.width, self.image_state.height = width, height
+            return self.processors.processor.data["image"]["binary"]
+        # Fallback to cached image if processor data is not ready
+        return self.image_state.main_image
 
     @property
     def supported_features(self) -> CameraEntityFeature:
@@ -534,9 +543,8 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
                 jpeg_bytes = await self.async_camera_image()
                 if jpeg_bytes is None:
                     break
-                jpeg_bytes = await self.hass.async_add_executor_job(
-                    self._ensure_jpeg, jpeg_bytes
-                )
+                # _ensure_jpeg is a simple comparison/assignment - no need for executor
+                jpeg_bytes = self._ensure_jpeg(jpeg_bytes)
                 await response.write(
                     bytes(
                         "--frameboundary\r\n"
@@ -558,5 +566,5 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
 
     async def handle_vacuum_start(self, event):
         """Handle the event_vacuum_start event."""
-        if event.data:
+        if event.data and isinstance(event.data, dict):
             self.context.shared.reset_trims()  # requires valetudo_map_parser >0.1.9b41
