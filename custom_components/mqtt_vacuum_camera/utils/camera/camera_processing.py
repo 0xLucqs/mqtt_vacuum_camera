@@ -96,10 +96,10 @@ class CameraProcessor:
                     # suspend image processing if we are at the next frame.
                     if (
                         self._shared.frame_number
-                        != self._map_handler.get_frame_number()
+                        != self._conga_handler.get_frame_number()
                     ):
                         self._shared.image_grab = False
-                        self._map_handler.update_trims()
+                        self._conga_handler.update_trims()
             return pil_img
         return None
 
