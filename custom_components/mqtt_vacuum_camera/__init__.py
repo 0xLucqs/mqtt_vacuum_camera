@@ -28,6 +28,7 @@ from .common import (
     get_camera_device_info,
     get_vacuum_device_info,
     get_vacuum_mqtt_topic,
+    is_congaduto_vacuum,
     is_rand256_vacuum,
     update_options,
 )
@@ -88,11 +89,13 @@ async def start_up_mqtt(
     return connector
 
 
-async def init_coordinator(hass, entry, vacuum_topic, is_rand256):
+async def init_coordinator(hass, entry, vacuum_topic, is_rand256, is_conga):
     """Initialize the coordinator with configuration."""
     device_info: DeviceInfo = get_camera_device_info(hass, entry)
     shared, _ = init_shared_data(hass, vacuum_topic, device_info)
     shared.user_language = await async_get_active_user_language(hass)
+    shared.is_rand = is_rand256
+    shared.is_conga = is_conga
     connector = await start_up_mqtt(hass, vacuum_topic, is_rand256, shared)
 
     config = CoordinatorConfig(
@@ -137,9 +140,10 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> boo
         raise ConfigEntryNotReady("MQTT was not ready yet, automatically retrying")
 
     is_rand256 = is_rand256_vacuum(vacuum_device)
+    is_conga = is_congaduto_vacuum(vacuum_device)
 
     data_coordinator = await init_coordinator(
-        hass, entry, mqtt_topic_vacuum, is_rand256
+        hass, entry, mqtt_topic_vacuum, is_rand256, is_conga
     )
 
     hass_data.update(
@@ -223,7 +227,7 @@ async def async_unload_entry(
 
 # noinspection PyCallingNonCallable
 async def async_setup(hass: core.HomeAssistant, _config: dict) -> bool:
-    """Set up the MQTT Camera Custom component from yaml configuration."""
+    """Set up the MQTT Camera Custom component from YAML configuration."""
 
     async def handle_homeassistant_stop(_event):
         """Handle Home Assistant stop event."""
