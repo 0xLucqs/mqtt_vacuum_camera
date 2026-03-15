@@ -74,7 +74,6 @@ def init_shared_data(
     shared_manager = CameraSharedManager(file_name, dict(device_info))
     shared = shared_manager.get_instance()
     shared.vacuum_status_font = f"{get_default_font_path()}/FiraSans.ttf"
-    shared.set_content_type("jpeg")
     return shared, file_name
 
 
@@ -467,6 +466,32 @@ async def async_migrate_entry(hass, config_entry: config_entries.ConfigEntry):
             LOGGER.debug("Migration data: %s", dict(new_options))
             hass.config_entries.async_update_entry(
                 config_entry, version=3.6, data=new_data, options=new_options
+            )
+            LOGGER.info(
+                "Migration to config entry version %s successful",
+                config_entry.version,
+            )
+            return True
+
+        LOGGER.error(
+            "Migration failed: No options found in config entry. Please reconfigure the camera."
+        )
+        return False
+    if config_entry.version == 3.6:
+        LOGGER.info("Migrating config entry from version %s", config_entry.version)
+        old_data = {**config_entry.data}
+        new_data = {"vacuum_config_entry": old_data["vacuum_config_entry"]}
+        old_options = {**config_entry.options}
+        if len(old_options) != 0:
+            # Add image format option
+            tmp_option: dict[str, Any] = {  # type: ignore[no-redef]
+                "def_context_type": "jpeg",
+            }
+            new_options = await update_options(old_options, tmp_option)
+            del tmp_option  # Clear for mypy
+            LOGGER.debug("Migration data: %s", dict(new_options))
+            hass.config_entries.async_update_entry(
+                config_entry, version=3.7, data=new_data, options=new_options
             )
             LOGGER.info(
                 "Migration to config entry version %s successful",

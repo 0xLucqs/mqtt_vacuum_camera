@@ -1,6 +1,6 @@
 """
 Camera
-Last Updated on version: 2025.12.0
+Last Updated on version: 2026.3.1
 """
 
 from __future__ import annotations
@@ -29,8 +29,7 @@ async def async_setup_entry(
     # Update our config to and eventually add or remove option.
     if config_entry.options:
         config.update(config_entry.options)
-    test_mode = coordinator.context.shared.get_content_type()
-    if test_mode == "image/jpeg":
+    if coordinator.context.shared.get_content_type == "image/jpeg":
         camera = [MQTTCameraMPEG(coordinator, config)]
     else:
         camera = [MQTTCamera(coordinator, config)]

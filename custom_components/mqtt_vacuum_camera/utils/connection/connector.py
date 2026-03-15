@@ -597,9 +597,14 @@ class ValetudoConnector:
                 await self._handle_pkohelrs_maploader_state(msg)
             case t if t == self.config.mqtt_hass_vacuum:
                 temp_json = await self._async_decode_mqtt_payload(msg)
-                self.config.shared.vacuum_api = temp_json.get("device", {}).get(
-                    "configuration_url", None
-                )
+                if isinstance(temp_json, dict):
+                    self.config.shared.vacuum_api = temp_json.get("device", {}).get(
+                        "configuration_url", None
+                    )
+                elif isinstance(temp_json, str):
+                    self.config.shared.vacuum_api = temp_json
+                else:
+                    self.config.shared.vacuum_api = None
                 LOGGER.debug(
                     "%s: Vacuum API URL: %s",
                     self.connector_data.file_name,
