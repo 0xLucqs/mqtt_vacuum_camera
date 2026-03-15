@@ -293,7 +293,7 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
         }
         attributes.update(attr_data)
         # Override content_type to match the actual image format setting
-        attributes["content_type"] = self.context.shared.get_content_type()
+        attributes["content_type"] = self.context.shared.get_content_type
         return attributes
 
     @property
