@@ -51,6 +51,9 @@ def get_camera_device_info(hass, entry):
         hass.config_entries.async_get_entry(str(entry.entry_id)).options
     )
     camera_entry.update(camera_entry_options)
+    # Ensure def_context_type has a default value if missing
+    if "def_context_type" not in camera_entry:
+        camera_entry["def_context_type"] = "jpeg"
     return camera_entry
 
 
