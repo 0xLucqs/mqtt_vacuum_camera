@@ -190,7 +190,7 @@
           "aspect_ratio": "Bildeformat.",
           "robot_size": "Størrelsen på roboten.",
           "mop_path_width": "Moppens bredde",
-          "def_contex_type": "Bildeformat"
+          "def_context_type": "Bildeformat"
         },
         "data_description": {
           "rotate_image": "Grad 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Bildeformat.",
           "robot_size": "Størrelsen på roboten i piksler 8-25.",
           "mop_path_width": "Bredden på støvsugerbanen i moppemodus (1–50 piksler, må være mindre enn robotens størrelse).",
-          "def_contex_type": "Velg bildeformat for kameraet (JPEG, PNG eller PIL). JPEG anbefales for best mulig kompatibilitet."
+          "def_context_type": "Velg bildeformat for kameraet (JPEG, PNG eller PIL). JPEG anbefales for best mulig kompatibilitet."
         },
         "description": "Kameraets bildealternativer",
         "title": "Bildealternativer"

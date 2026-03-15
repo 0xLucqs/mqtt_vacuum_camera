@@ -190,7 +190,7 @@
           "aspect_ratio": "Format d'image.",
           "robot_size": "Taille du robot.",
           "mop_path_width": "Largeur du chemin de la serpillière",
-          "def_contex_type": "Image Format"
+          "def_context_type": "Image Format"
         },
         "data_description": {
           "rotate_image": "Degré 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Format d'image.",
           "robot_size": "Taille du robot en pixels : 8-25.",
           "mop_path_width": "Largeur du chemin d'aspiration en mode balai (1 à 50 pixels, doit être inférieure à la taille du robot).",
-          "def_contex_type": "Sélectionnez le format d'image de l'appareil photo (JPEG, PNG ou PIL). Le format JPEG est recommandé pour une compatibilité optimale."
+          "def_context_type": "Sélectionnez le format d'image de l'appareil photo (JPEG, PNG ou PIL). Le format JPEG est recommandé pour une compatibilité optimale."
         },
         "description": "Options d'image de la caméra",
         "title": "Options d'image"

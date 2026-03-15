@@ -190,7 +190,7 @@
           "aspect_ratio": "Image Aspect Ratio.",
           "robot_size": "Size of the Robot.",
           "mop_path_width": "Mop Path Width",
-          "image_format": "Image Format"
+          "def_context_type": "Image Format"
         },
         "data_description": {
           "rotate_image": "Degree 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Image Aspect Ratio.",
           "robot_size": "Size of the Robot in pixels 8-25.",
           "mop_path_width": "Width of the vacuum path when in mop mode (1-50 pixels, must be less than robot size).",
-          "image_format": "Select the image format for the camera (JPEG, PNG, or PIL). JPEG is recommended for best compatibility."
+          "def_context_type": "Select the image format for the camera (JPEG, PNG, or PIL). JPEG is recommended for best compatibility."
         },
         "description": "Camera Image Options",
         "title": "Image Options"

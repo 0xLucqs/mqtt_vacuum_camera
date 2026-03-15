@@ -190,7 +190,7 @@
           "aspect_ratio": "Poměr stran obrazu.",
           "robot_size": "Velikost robota.",
           "mop_path_width": "Šířka dráhy mopu",
-          "def_contex_type": "Formát obrázku"
+          "def_context_type": "Formát obrázku"
         },
         "data_description": {
           "rotate_image": "Stupeň 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Poměr stran obrazu.",
           "robot_size": "Velikost robota v pixelech 8–25.",
           "mop_path_width": "Šířka vakuové dráhy v režimu mopování (1–50 pixelů, musí být menší než velikost robota).",
-          "def_contex_type": "Vyberte formát snímků pro fotoaparát (JPEG, PNG nebo PIL). Pro nejlepší kompatibilitu doporučujeme formát JPEG."
+          "def_context_type": "Vyberte formát snímků pro fotoaparát (JPEG, PNG nebo PIL). Pro nejlepší kompatibilitu doporučujeme formát JPEG."
         },
         "description": "Možnosti obrazu kamery",
         "title": "Možnosti obrázku"

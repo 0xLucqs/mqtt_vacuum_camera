@@ -190,7 +190,7 @@
           "aspect_ratio": "图像宽高比。",
           "robot_size": "机器人的尺寸。",
           "mop_path_width": "拖把路径宽度",
-          "def_contex_type": "图像格式"
+          "def_context_type": "图像格式"
         },
         "data_description": {
           "rotate_image": "0度、90度、180度、270度",
@@ -198,7 +198,7 @@
           "aspect_ratio": "图像宽高比。",
           "robot_size": "机器人的像素尺寸为8-25。",
           "mop_path_width": "拖地模式下真空路径宽度（1-50像素，必须小于机器人尺寸）。",
-          "def_contex_type": "请选择相机的图像格式（JPEG、PNG 或 PIL）。为确保最佳兼容性，建议选择 JPEG 格式。"
+          "def_context_type": "请选择相机的图像格式（JPEG、PNG 或 PIL）。为确保最佳兼容性，建议选择 JPEG 格式。"
         },
         "description": "相机图像选项",
         "title": "图片选项"

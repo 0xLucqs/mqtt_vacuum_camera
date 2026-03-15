@@ -190,7 +190,7 @@
           "aspect_ratio": "Rapporto di aspetto dell'immagine.",
           "robot_size": "Dimensioni del robot.",
           "mop_path_width": "Larghezza del percorso del mocio",
-          "def_contex_type": "Formato immagine"
+          "def_context_type": "Formato immagine"
         },
         "data_description": {
           "rotate_image": "Grado 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Rapporto di aspetto dell'immagine.",
           "robot_size": "Dimensioni del robot in pixel 8-25.",
           "mop_path_width": "Larghezza del percorso di aspirazione in modalità mop (1-50 pixel, deve essere inferiore alle dimensioni del robot).",
-          "def_contex_type": "Seleziona il formato immagine per la fotocamera (JPEG, PNG o PIL). Si consiglia il formato JPEG per garantire la massima compatibilità."
+          "def_context_type": "Seleziona il formato immagine per la fotocamera (JPEG, PNG o PIL). Si consiglia il formato JPEG per garantire la massima compatibilità."
         },
         "description": "Opzioni immagine della fotocamera",
         "title": "Opzioni immagine"

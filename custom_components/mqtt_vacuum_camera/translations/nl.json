@@ -190,7 +190,7 @@
           "aspect_ratio": "Beeldverhouding.",
           "robot_size": "Grootte van de robot.",
           "mop_path_width": "Breedte van de dweilbaan",
-          "def_contex_type": "Afbeeldingsformaat"
+          "def_context_type": "Afbeeldingsformaat"
         },
         "data_description": {
           "rotate_image": "Graad 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Beeldverhouding.",
           "robot_size": "Grootte van de robot in pixels 8-25.",
           "mop_path_width": "Breedte van het vacuümpad in de dweilstand (1-50 pixels, moet kleiner zijn dan de afmetingen van de robot).",
-          "def_contex_type": "Kies het afbeeldingsformaat voor de camera (JPEG, PNG of PIL). Voor de beste compatibiliteit wordt JPEG aanbevolen."
+          "def_context_type": "Kies het afbeeldingsformaat voor de camera (JPEG, PNG of PIL). Voor de beste compatibiliteit wordt JPEG aanbevolen."
         },
         "description": "Camera-afbeeldingsopties",
         "title": "Beeldopties"

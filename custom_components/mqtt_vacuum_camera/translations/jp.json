@@ -190,7 +190,7 @@
           "aspect_ratio": "画像アスペクト比",
           "robot_size": "ロボットのサイズ。",
           "mop_path_width": "モップの幅",
-          "def_contex_type": "画像形式"
+          "def_context_type": "画像形式"
         },
         "data_description": {
           "rotate_image": "0度、90度、180度、270度",
@@ -198,7 +198,7 @@
           "aspect_ratio": "画像アスペクト比",
           "robot_size": "ロボットのサイズ（ピクセル単位） 8-25.",
           "mop_path_width": "モップモード時の吸引経路の幅（1～50ピクセル、ロボットサイズより小さくする必要があります）。",
-          "def_contex_type": "カメラの画像形式（JPEG、PNG、またはPIL）を選択してください。互換性を最大限に高めるため、JPEGをお勧めします。"
+          "def_context_type": "カメラの画像形式（JPEG、PNG、またはPIL）を選択してください。互換性を最大限に高めるため、JPEGをお勧めします。"
         },
         "description": "カメラ画像オプション",
         "title": "画像オプション"
