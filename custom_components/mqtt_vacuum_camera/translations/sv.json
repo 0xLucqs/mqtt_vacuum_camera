@@ -190,7 +190,7 @@
           "aspect_ratio": "Bildformat.",
           "robot_size": "Robotens storlek.",
           "mop_path_width": "Moppens bredd",
-          "image_format": "Bildformat"
+          "def_contex_type": "Bildformat"
         },
         "data_description": {
           "rotate_image": "Grad 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Bildformat.",
           "robot_size": "Robotens storlek i pixlar 8-25.",
           "mop_path_width": "Vakuumbanans bredd i moppningsläge (1–50 pixlar, måste vara mindre än robotens storlek).",
-          "image_format": "Välj bildformat för kameran (JPEG, PNG eller PIL). JPEG rekommenderas för bästa kompatibilitet."
+          "def_contex_type": "Välj bildformat för kameran (JPEG, PNG eller PIL). JPEG rekommenderas för bästa kompatibilitet."
         },
         "description": "Kamerabildalternativ",
         "title": "Bildalternativ"

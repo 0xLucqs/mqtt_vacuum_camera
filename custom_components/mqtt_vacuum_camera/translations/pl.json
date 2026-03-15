@@ -190,7 +190,7 @@
           "aspect_ratio": "Proporcje obrazu.",
           "robot_size": "Rozmiar robota.",
           "mop_path_width": "Szerokość ścieżki mopa",
-          "image_format": "Format obrazu"
+          "def_contex_type": "Format obrazu"
         },
         "data_description": {
           "rotate_image": "Stopień 0, 90, 180, 270",
@@ -198,7 +198,7 @@
           "aspect_ratio": "Proporcje obrazu.",
           "robot_size": "Rozmiar robota w pikselach 8-25.",
           "mop_path_width": "Szerokość ścieżki odkurzania w trybie mopa (1–50 pikseli, musi być mniejsza niż rozmiar robota).",
-          "image_format": "Wybierz format obrazu dla aparatu (JPEG, PNG lub PIL). Ze względu na najlepszą kompatybilność zalecamy format JPEG."
+          "def_contex_type": "Wybierz format obrazu dla aparatu (JPEG, PNG lub PIL). Ze względu na najlepszą kompatybilność zalecamy format JPEG."
         },
         "description": "Opcje obrazu kamery",
         "title": "Opcje obrazu"
