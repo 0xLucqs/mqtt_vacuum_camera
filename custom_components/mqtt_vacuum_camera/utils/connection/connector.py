@@ -3,13 +3,13 @@ Consolidated ValetudoConnector with grouped data.
 Last Updated on version: 2025.10.0
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 import json
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 from homeassistant.components import mqtt, persistent_notification
 from homeassistant.core import EventOrigin, HomeAssistant, callback
-from homeassistant.helpers.event import async_track_state_change_event
 from valetudo_map_parser.config.types import RoomStore
 
 from custom_components.mqtt_vacuum_camera.common import (
@@ -156,7 +156,7 @@ class ValetudoConnector:
         self.mqtt_data = MQTTData()
         self.rrm_data = RRMData(rrm_command=f"{mqtt_topic}/command")
         self.pkohelrs_data = PkohelrsData()
-        self._notification_listeners: Set[str] = set()
+        self._notification_listeners: Dict[str, Callable[[], None]] = {}
 
     async def update_data(self, process: bool = True):
         """
@@ -385,7 +385,7 @@ class ValetudoConnector:
           processed=True (e.g. dismissed in the Valetudo web UI), the HA
           notification is dismissed automatically.
         """
-        if not events or not isinstance(events, dict):
+        if events is None or not isinstance(events, dict):
             return
         self.mqtt_data.valetudo_events = events
         for event_id, event_data in events.items():
@@ -398,11 +398,14 @@ class ValetudoConnector:
                 notification_id = f"valetudo_error_{event_id}"
                 if processed:
                     # Event acknowledged (via any interface) — clear the HA notification.
+                    # Unsubscribe BEFORE dismissing so our own dismiss call doesn't
+                    # echo back through the REMOVED callback and re-publish the
+                    # interact command Valetudo already processed.
+                    self._unsubscribe_notification_listener(notification_id)
                     persistent_notification.async_dismiss(
                         self.connector_data.hass,
                         notification_id=notification_id,
                     )
-                    self._notification_listeners.discard(notification_id)
                 else:
                     error_message = event_data.get("message", "Unknown error")
                     self.mqtt_data.mqtt_vac_err = error_message
@@ -418,37 +421,55 @@ class ValetudoConnector:
                         event_id, "ok", notification_id
                     )
 
+    def _unsubscribe_notification_listener(self, notification_id: str) -> None:
+        """Remove and invoke a tracked persistent-notification callback, if any."""
+        unsubscribe = self._notification_listeners.pop(notification_id, None)
+        if unsubscribe is None:
+            return
+        unsubscribe()
+        if unsubscribe in self.connector_data.unsubscribe_handlers:
+            self.connector_data.unsubscribe_handlers.remove(unsubscribe)
+
     def _register_notification_dismiss_listener(
         self, event_id: str, interaction: str, notification_id: str
     ) -> None:
-        """Register a one-time state-change listener for a persistent notification.
+        """Register a dispatcher callback for persistent-notification removal.
 
-        When the HA notification entity is removed (new_state is None), the user
-        dismissed it. We then call _dismiss_valetudo_event to publish the interact
-        command to Valetudo via MQTT, completing the HA → Valetudo direction of
-        the bidirectional sync.
+        Persistent notifications stopped creating state machine entities in
+        Home Assistant 2023.6, so tracking ``persistent_notification.<id>`` via
+        ``async_track_state_change_event`` never fires. We use
+        ``persistent_notification.async_register_callback`` and match on
+        ``UpdateType.REMOVED`` + our ``notification_id`` instead.
+
+        When the user dismisses the HA notification the callback schedules
+        ``_dismiss_valetudo_event`` to publish the interact command, completing
+        the HA → Valetudo direction of the bidirectional sync.
 
         Guards against duplicate registration: if a listener is already tracked
         for this notification_id, the call is a no-op.
         """
         if notification_id in self._notification_listeners:
             return
-        self._notification_listeners.add(notification_id)
-
-        entity_id = f"persistent_notification.{notification_id}"
 
         @callback
-        def _on_state_change(event: Any) -> None:
-            if event.data.get("new_state") is None:
-                # Entity removed → notification was dismissed in HA
-                self._notification_listeners.discard(notification_id)
+        def _on_notification_update(
+            update_type: persistent_notification.UpdateType,
+            notifications: Dict[str, Any],
+        ) -> None:
+            if (
+                update_type == persistent_notification.UpdateType.REMOVED
+                and notification_id in notifications
+            ):
+                # Notification dismissed in HA — propagate back to Valetudo.
+                self._unsubscribe_notification_listener(notification_id)
                 self.connector_data.hass.async_create_task(
                     self._dismiss_valetudo_event(event_id, interaction)
                 )
 
-        unsub = async_track_state_change_event(
-            self.connector_data.hass, [entity_id], _on_state_change
+        unsub = persistent_notification.async_register_callback(
+            self.connector_data.hass, _on_notification_update
         )
+        self._notification_listeners[notification_id] = unsub
         self.connector_data.unsubscribe_handlers.append(unsub)
 
     async def _dismiss_valetudo_event(self, event_id: str, interaction: str) -> None:
