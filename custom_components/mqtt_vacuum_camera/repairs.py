@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from homeassistant import data_entry_flow
-from homeassistant.components.repairs import RepairsFlow
+from homeassistant.components.repairs import ConfirmRepairFlow, RepairsFlow
 from homeassistant.core import HomeAssistant
 import voluptuous as vol
 
@@ -33,6 +33,8 @@ async def async_create_fix_flow(
     issue_id: str,
     _data: dict[str, str | int | float | None] | None,
 ) -> RepairsFlow:
-    """Create flow. issue_1 is general purpose"""
+    """Create flow."""
+    if issue_id == "reset_trims_deprecated":
+        return ConfirmRepairFlow()
     if issue_id == "issue_1":
         return Issue1RepairFlow()

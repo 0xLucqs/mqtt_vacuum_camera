@@ -4,6 +4,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import SERVICE_RELOAD
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import issue_registry as ir
 
 from ...common import create_floor_data, get_entity_id
 from ...const import CONF_CURRENT_FLOOR, CONF_FLOORS_DATA, DOMAIN, LOGGER
@@ -13,6 +14,17 @@ from ...utils.files_operations import async_clean_up_all_auto_crop_files
 async def reset_trims(call: ServiceCall, hass: HomeAssistant) -> None:
     """Action Reset Map Trims."""
     LOGGER.debug("Resetting trims for %s", DOMAIN)
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        "reset_trims_deprecated",
+        breaks_in_ha_version="2026.8.0",
+        is_fixable=True,
+        is_persistent=True,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key="reset_trims_deprecated",
+        translation_placeholders={"domain": DOMAIN},
+    )
     try:
         await async_clean_up_all_auto_crop_files(hass)
         await hass.services.async_call(DOMAIN, SERVICE_RELOAD)
