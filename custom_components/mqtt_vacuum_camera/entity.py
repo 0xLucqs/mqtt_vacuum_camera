@@ -392,12 +392,18 @@ class MQTTCamera(CoordinatorEntity, Camera):  # pylint: disable=too-many-instanc
                         self.mqtt.connector.get_destinations()
                     )
                 try:
-                    await asyncio.wait_for(
+                    pil_img = await asyncio.wait_for(
                         self.processors.processor.run_process_valetudo_data(
                             parsed_json
                         ),
                         timeout=RENDER_TIMEOUT_S,
                     )
+                    if pil_img is not None:
+                        image_bytes = await self._run_async_image_to_bytes(pil_img)
+                        if image_bytes:
+                            self.image_state.main_image = image_bytes
+                            self.context.shared.last_image = pil_img
+                            self.async_write_ha_state()
                     # Reset timeout counter on successful processing
                     self.settings.timeout_counter = 0
                 except asyncio.TimeoutError:
